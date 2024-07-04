@@ -11,12 +11,12 @@ interface InputFieldState {
 class InputField extends Component<InputFieldProps, InputFieldState> {
   constructor(props: InputFieldProps) {
     super(props);
-    this.state = { value: '' };
+    this.state = { value: localStorage.getItem('searchQuery') || '' };
   }
 
-  handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ value: event.target.value });
-  }
+  };
 
   render() {
     const { label, ...props } = this.props;

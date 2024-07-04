@@ -1,4 +1,5 @@
 import { Component, ReactNode, ErrorInfo } from 'react';
+import Button from './Button';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -26,6 +27,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render() {
     const { error, errorInfo } = this.state;
     const { children } = this.props;
+
     if (errorInfo) {
       return (
         <div>
@@ -35,6 +37,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           </details>
           <br />
           {errorInfo.componentStack}
+          <Button
+            label="Reload"
+            type="button"
+            onClick={() => window.location.reload()}
+          />
         </div>
       );
     }

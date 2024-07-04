@@ -1,9 +1,15 @@
 import { Component } from 'react';
 import StarWarsView from './views/StarWars';
+import ErrorBoundary from './components/ErrorBoundary';
+import './App.css';
 
 class App extends Component {
   render() {
-    return <StarWarsView />;
+    return (
+      <ErrorBoundary>
+        <StarWarsView />
+      </ErrorBoundary>
+    );
   }
 }
 
