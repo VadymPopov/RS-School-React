@@ -35,8 +35,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           <details style={{ whiteSpace: 'pre-wrap' }}>
             {error && error.toString()}
           </details>
-          <br />
-          {errorInfo.componentStack}
+          <p>{errorInfo.componentStack}</p>
+
           <Button
             label="Reload"
             type="button"

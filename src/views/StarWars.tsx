@@ -3,6 +3,7 @@ import Form from '../components/Form';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
 import ShipsList from '../components/ShipsList';
+import Loader from '../components/Loader';
 import getStarShips from '../services';
 
 export interface StarShip {
@@ -17,6 +18,7 @@ export interface StarShip {
 interface StarWarsState {
   starShips: StarShip[];
   error: string | null;
+  loading: boolean;
 }
 
 class StarWarsView extends Component<object, StarWarsState> {
@@ -25,49 +27,65 @@ class StarWarsView extends Component<object, StarWarsState> {
     this.state = {
       starShips: [],
       error: null,
+      loading: true,
     };
   }
 
-  onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  fetchStarShips = (searchQuery: string): void => {
+    getStarShips(searchQuery)
+      .then((data) => {
+        this.setState({ starShips: data.results, error: null, loading: false });
+      })
+      .catch((error) => {
+        this.setState({ starShips: [], error: error.message, loading: false });
+      });
+  };
+
+  componentDidMount(): void {
+    this.fetchStarShips(localStorage.getItem('searchQuery') || '');
+  }
+
+  onSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const searchQuery = form.query.value.trim();
     localStorage.setItem('searchQuery', searchQuery);
-
-    getStarShips(searchQuery)
-      .then((data) => {
-        console.log(data.results);
-        this.setState({ starShips: data.results, error: null });
-      })
-      .catch((error) => {
-        this.setState({ starShips: [], error: error.message });
-      });
+    this.setState({ loading: true });
+    this.fetchStarShips(searchQuery);
   };
 
-  triggerError = () => {
+  triggerError = (): void => {
     this.setState({ error: 'This is a simulated error.' });
   };
 
   render() {
-    const { starShips, error } = this.state;
+    const { starShips, error, loading } = this.state;
 
     if (error) {
       throw new Error(error);
     }
 
     return (
-      <>
+      <main className="main-container">
         <section>
           <Form onSubmit={this.onSubmit}>
-            <InputField label="Search: " name="query" />
-            <Button label="Search" type="submit" />
-            <Button label="Error" type="button" onClick={this.triggerError} />
+            <InputField label="Search you Star Wars ship: " name="query" />
+            <div className="buttons">
+              <Button label="Search" type="submit" />
+              <Button label="Error" type="button" onClick={this.triggerError} />
+            </div>
           </Form>
         </section>
         <section>
-          <ShipsList ships={starShips} />
+          {loading ? (
+            <div className="loader-container">
+              <Loader />
+            </div>
+          ) : (
+            <ShipsList ships={starShips} />
+          )}
         </section>
-      </>
+      </main>
     );
   }
 }
