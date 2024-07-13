@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import { StarShip } from '../views/StarWars';
 import ShipItem from './ShipItem';
 
@@ -6,26 +5,20 @@ interface ShipsListProps {
   ships: StarShip[];
 }
 
-class ShipsList extends Component<ShipsListProps> {
-  render() {
-    const { ships } = this.props;
-
-    if (ships.length === 0) {
-      return (
-        <div className="nothing-found">
-          <h2>Nothing have found</h2>
-        </div>
-      );
-    }
-
+export default function ShipsList({ ships }: ShipsListProps) {
+  if (ships.length === 0) {
     return (
-      <ul>
-        {ships.map((ship) => {
-          return <ShipItem key={ship.name} {...ship} />;
-        })}
-      </ul>
+      <div className="nothing-found">
+        <h2>Nothing have found</h2>
+      </div>
     );
   }
-}
 
-export default ShipsList;
+  return (
+    <ul>
+      {ships.map((ship) => {
+        return <ShipItem key={ship.name} {...ship} />;
+      })}
+    </ul>
+  );
+}
