@@ -1,4 +1,4 @@
-import { StarShip } from '../views/StarWars';
+import { StarShip } from '../types';
 import ShipItem from './ShipItem';
 
 interface ShipsListProps {
