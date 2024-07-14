@@ -59,6 +59,15 @@ button:hover {
   border-color: #1a1a1a;
 }
 
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  border: 1px solid transparent;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -231,4 +240,8 @@ li {
 
 .fixed-button:hover {
   background-color: #0056b3;
+}
+
+.pages-span {
+  padding: 0 20px;
 }
