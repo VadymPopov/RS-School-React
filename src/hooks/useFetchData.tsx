@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getStarShips from '../services';
+import { getStarShips } from '../services';
 import { StarShip } from '../types';
 
 interface StarWarsState {
@@ -16,23 +16,29 @@ export default function useFetchData(searchQuery: string) {
   });
 
   useEffect(() => {
-    setState({ starShips: [], error: null, loading: true });
-    getStarShips(searchQuery)
-      .then((data) => {
+    const fetchData = async () => {
+      setState({ starShips: [], error: null, loading: true });
+
+      try {
+        const data = await getStarShips(searchQuery);
         setState((prevState) => ({
           ...prevState,
           starShips: data?.results,
           loading: false,
         }));
-      })
-      .catch((error) => {
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
         setState((prevState) => ({
           ...prevState,
           starShips: [],
-          error: error.message,
+          error: errorMessage,
           loading: false,
         }));
-      });
+      }
+    };
+
+    fetchData();
   }, [searchQuery]);
 
   const triggerError = (): void => {

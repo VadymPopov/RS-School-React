@@ -52,6 +52,7 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
+  color: #fff;
   transition: border-color 0.25s;
 }
 button:hover {
@@ -184,4 +185,50 @@ li {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.active {
+  color: #f03355;
+}
+.active:hover {
+  color: #ee0a34;
+}
+
+.pending {
+  color: #ddd;
+}
+
+.split-screen {
+  display: flex;
+  height: 100vh;
+}
+
+.pane {
+  flex: 1;
+  padding: 20px;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* FixedButton.css */
+.fixed-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.fixed-button:hover {
+  background-color: #0056b3;
 }
