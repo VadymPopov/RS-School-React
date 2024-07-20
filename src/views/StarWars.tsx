@@ -1,12 +1,10 @@
 import { FormEvent } from 'react';
 import Form from '../components/Form';
-import Button from '../components/Button';
-import InputField from '../components/InputField';
 import ShipsList from '../components/ShipsList';
 import Loader from '../components/Loader';
 import Pagination from '../components/Pagination';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getStarShips } from '../services';
@@ -24,6 +22,7 @@ export default function StarWarsView({
   const [loading, setLoading] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(0);
   const page = searchParams.get('page') || '1';
+  const location = useLocation();
 
   useEffect(() => {
     const fetchStarShips = async () => {
@@ -46,7 +45,7 @@ export default function StarWarsView({
 
   const navigate = useNavigate();
   const handleLeftPaneClick = () => {
-    navigate('/');
+    navigate(`/${location.search}`);
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>): void => {
@@ -69,15 +68,12 @@ export default function StarWarsView({
   }
 
   return (
-    <main className="main-container">
-      <section onClick={showSplitScreen ? handleLeftPaneClick : () => {}}>
-        <Form onSubmit={onSubmit}>
-          <InputField label="Search you Star Wars ship: " name="query" />
-          <div className="buttons">
-            <Button label="Search" type="submit" />
-            <Button label="Error" type="button" onClick={triggerError} />
-          </div>
-        </Form>
+    <main
+      className="main-container"
+      onClick={showSplitScreen ? handleLeftPaneClick : () => {}}
+    >
+      <section>
+        <Form onSubmit={onSubmit} triggerError={triggerError} />
       </section>
       <section>
         {loading ? (

@@ -5,7 +5,6 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorPage from './views/Error.tsx';
 import ShipDetails from './components/ShipDetails.tsx';
-import { shipLoader } from './loaders';
 
 const router = createBrowserRouter([
   {
@@ -16,7 +15,6 @@ const router = createBrowserRouter([
       {
         path: 'details/:shipId',
         element: <ShipDetails />,
-        loader: shipLoader,
         errorElement: <ErrorPage />,
       },
     ],

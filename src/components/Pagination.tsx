@@ -7,8 +7,6 @@ interface PaginationProps {
 export default function Pagination({ totalPages }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  console.log(totalPages);
-  console.log(currentPage);
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= totalPages) {

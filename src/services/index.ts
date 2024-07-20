@@ -1,7 +1,9 @@
 const baseUrl = 'https://swapi.dev/api/starships/';
 
 export async function getStarShips(query: string, page: string) {
-  const url = query ? baseUrl + `?search=${query}&page=${page}` : baseUrl;
+  const url = query
+    ? baseUrl + `?search=${query}&page=${page}`
+    : baseUrl + `?page=${page}`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -16,7 +18,7 @@ export async function getStarShips(query: string, page: string) {
 }
 
 export async function getStarShipDetails(id: string) {
-  const url = `${baseUrl}/${id}`;
+  const url = `${baseUrl}${id}`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
