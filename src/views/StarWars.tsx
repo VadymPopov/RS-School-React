@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getStarShips } from '../services';
 import { StarShip } from '../types';
+import ThemedDropdown from '../components/ThemedDropdown';
 
 export default function StarWarsView({
   showSplitScreen,
@@ -72,6 +73,9 @@ export default function StarWarsView({
       className="main-container"
       onClick={showSplitScreen ? handleLeftPaneClick : () => {}}
     >
+      <div>
+        <ThemedDropdown />
+      </div>
       <section>
         <Form onSubmit={onSubmit} triggerError={triggerError} />
       </section>

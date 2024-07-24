@@ -2,25 +2,42 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+.light-theme {
+  --primary-color: #213547;
+  --background-color: #ffffff;
+  --link-color: #646cff;
+  --link-hover-color: #535bf2;
+  --button-color: #fff;
+  --button-bg-color: #646cff;
+  --button-hover-bg-color: #0056b3;
+  --button-border-color: transparent;
+  --button-hover-border-color: #1a1a1a;
+  --button-disabled-bg-color: #ccc;
+  --button-disabled-border-color: transparent;
+  --dropdown-bg-color: #ffffff;
+  --dropdown-border-color: #ccc;
+  --dropdown-text-color: #333;
+  --li-bg-color: #f9f9f9;
 }
 
-a:hover {
-  color: #535bf2;
+.dark-theme {
+  --primary-color: rgba(255, 255, 255, 0.87);
+  --background-color: #242424;
+  --link-color: rgba(255, 255, 255, 0.87);
+  --link-hover-color: #fff;
+  --button-color: #fff;
+  --button-bg-color: #1a1a1a;
+  --button-border-color: transparent;
+  --button-hover-bg-color: #000;
+  --button-hover-border-color: #1a1a1a;
+  --button-disabled-bg-color: #ccc;
+  --button-disabled-border-color: transparent;
+  --dropdown-bg-color: #333;
+  --dropdown-border-color: #444;
+  --dropdown-text-color: rgba(255, 255, 255, 0.87);
+  --li-bg-color: transparent;
 }
 
 body {
@@ -29,6 +46,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  color: var(--primary-color);
+  background-color: var(--background-color);
 }
 
 section {
@@ -43,44 +62,41 @@ h1 {
   line-height: 1.1;
 }
 
+a {
+  font-weight: 500;
+  color: var(--link-color);
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: var(--link-hover-color);
+}
+
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid var(--button-border-color);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--button-bg-color);
   cursor: pointer;
-  color: #fff;
+  color: var(--button-color);
   transition: border-color 0.25s;
 }
+
 button:hover {
-  border-color: #1a1a1a;
+  border-color: var(--button-hover-border-color);
+  background-color: var(--button-hover-bg-color);
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: var(--button-disabled-bg-color);
   cursor: not-allowed;
 }
 
 button:disabled:hover {
-  border: 1px solid transparent;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #646cff;
-  }
+  border: 1px solid var(--button-disabled-border-color);
 }
 
 label {
@@ -109,7 +125,6 @@ form {
   padding: 20px;
   border: 1px solid #f1f1f1;
   border-radius: 8px;
-  background-color: #fff;
 }
 
 ul {
@@ -125,7 +140,7 @@ li {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  background-color: #f9f9f9;
+  background-color: var(--li-bg-color);
 }
 
 .buttons {
@@ -223,13 +238,12 @@ li {
   justify-content: center;
 }
 
-/* FixedButton.css */
 .fixed-button {
   position: fixed;
   top: 20px;
   right: 20px;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: var(--button-bg-color);
   color: white;
   border: none;
   border-radius: 5px;
@@ -239,9 +253,22 @@ li {
 }
 
 .fixed-button:hover {
-  background-color: #0056b3;
+  background-color: var(--button-hover-bg-color);
 }
 
 .pages-span {
   padding: 0 20px;
+}
+
+.dropdown {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px;
+  border: 1px solid var(--dropdown-border-color);
+  border-radius: 4px;
+  font-size: 16px;
+  z-index: 1000;
+  background-color: var(--dropdown-bg-color);
+  color: var(--dropdown-text-color);
 }
