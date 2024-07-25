@@ -7,25 +7,25 @@ export default function ShipItem({ name, model, manufacturer, url }: StarShip) {
   const location = useLocation();
 
   return (
-    <NavLink
-      to={`details/${shipId}${location.search}`}
-      className={({ isActive, isPending }) =>
-        isActive ? 'active' : isPending ? 'pending' : ''
-      }
-    >
-      <li>
+    <li>
+      <NavLink
+        to={`details/${shipId}${location.search}`}
+        className={({ isActive, isPending }) =>
+          isActive ? 'active' : isPending ? 'pending' : ''
+        }
+      >
         <div>
           <h2>{name}</h2>
         </div>
-        <div>
-          <p>
-            <strong>Model:</strong> {model}
-          </p>
-          <p>
-            <strong>Manufacturer:</strong> {manufacturer}
-          </p>
-        </div>
-      </li>
-    </NavLink>
+      </NavLink>
+      <div>
+        <p>
+          <strong>Model:</strong> {model}
+        </p>
+        <p>
+          <strong>Manufacturer:</strong> {manufacturer}
+        </p>
+      </div>
+    </li>
   );
 }

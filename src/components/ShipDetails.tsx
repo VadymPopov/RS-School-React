@@ -1,36 +1,16 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { StarShipDetails } from '../types';
 import Loader from './Loader';
-import { getStarShipDetails } from '../services';
-import { useEffect, useState } from 'react';
+import Error from './Error';
+import { starshipApi } from '../redux/swapi';
 
 export default function ShipDetails() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [shipDetails, setStarShipDetails] = useState<StarShipDetails>();
   const { shipId } = useParams();
-
-  useEffect(() => {
-    const fetchStarShipDetails = async () => {
-      setLoading(true);
-      setError('');
-
-      try {
-        const data = await getStarShipDetails(shipId || '1');
-        setStarShipDetails(data);
-      } catch (error: unknown) {
-        setError('Error fetching data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStarShipDetails();
-  }, [shipId]);
-
+  const { data, error, isLoading } = starshipApi.useGetStarShipDetailsQuery(
+    shipId || '1'
+  );
   const navigate = useNavigate();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex" data-testid="loader">
         <Loader />
@@ -39,7 +19,7 @@ export default function ShipDetails() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <Error error={error} />;
   }
 
   return (
@@ -49,33 +29,33 @@ export default function ShipDetails() {
       </button>
       <div>
         <div>
-          <h2>{shipDetails?.name}</h2>
+          <h2>{data?.name}</h2>
         </div>
         <div>
           <p>
-            <strong>Model:</strong> {shipDetails?.model}
+            <strong>Model:</strong> {data?.model}
           </p>
           <p>
-            <strong>Manufacturer:</strong> {shipDetails?.manufacturer}
+            <strong>Manufacturer:</strong> {data?.manufacturer}
           </p>
           <p>
-            <strong>Passengers:</strong> {shipDetails?.passengers}
+            <strong>Passengers:</strong> {data?.passengers}
           </p>
           <p>
-            <strong>Created:</strong> {shipDetails?.created?.split('T')[0]}
+            <strong>Created:</strong> {data?.created?.split('T')[0]}
           </p>
           <p>
             <strong>Max Atmospheric Speed:</strong>{' '}
-            {shipDetails?.max_atmosphering_speed}
+            {data?.max_atmosphering_speed}
           </p>
           <p>
-            <strong>Length:</strong> {shipDetails?.length}
+            <strong>Length:</strong> {data?.length}
           </p>
           <p>
-            <strong>Crew:</strong> {shipDetails?.crew}
+            <strong>Crew:</strong> {data?.crew}
           </p>
           <p>
-            <strong>Cost:</strong> {shipDetails?.cost_in_credits}
+            <strong>Cost:</strong> {data?.cost_in_credits}
           </p>
         </div>
       </div>

@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorPage from './views/Error.tsx';
 import ShipDetails from './components/ShipDetails.tsx';
 import ThemeProvider from './ThemeProvider.tsx';
+import { store } from './redux/store.ts';
+import { Provider } from 'react-redux';
 
 const router = createBrowserRouter([
   {
@@ -24,8 +26,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
