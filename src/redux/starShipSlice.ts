@@ -24,9 +24,12 @@ const starshipSlice = createSlice({
         (item) => item.name !== action.payload
       );
     },
+    unselectAll: (state) => {
+      state.selectedItems = [];
+    },
   },
 });
 
-export const { setStarships, addToSelected, deleteFromSelected } =
+export const { setStarships, addToSelected, deleteFromSelected, unselectAll } =
   starshipSlice.actions;
 export default starshipSlice.reducer;
