@@ -3,7 +3,8 @@ import '@testing-library/jest-dom';
 import ShipsList from '../components/ShipsList';
 import { StarShip } from '../types';
 import { BrowserRouter } from 'react-router-dom';
-
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 const mockShips: StarShip[] = [
   {
     name: 'Ship 1',
@@ -22,9 +23,11 @@ const mockShips: StarShip[] = [
 
 const MockShipsList = ({ ships }: { ships: StarShip[] }) => {
   return (
-    <BrowserRouter>
-      <ShipsList ships={ships} />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <ShipsList ships={ships} />
+      </BrowserRouter>
+    </Provider>
   );
 };
 

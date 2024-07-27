@@ -8,7 +8,7 @@ export interface FormProps {
 
 export default function Form({ onSubmit }: FormProps) {
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} data-testid="form">
       <InputField label="Search you Star Wars ship: " name="query" />
       <div className="buttons">
         <Button label="Search" type="submit" />

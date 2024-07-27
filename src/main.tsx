@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import ErrorPage from './views/Error.tsx';
+import ErrorPage from './views/NotFound.tsx';
 import ShipDetails from './components/ShipDetails.tsx';
 import ThemeProvider from './ThemeProvider.tsx';
 import { store } from './redux/store.ts';

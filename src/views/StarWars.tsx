@@ -69,7 +69,7 @@ export default function StarWarsView({
       </section>
       <section>
         {isLoading ? (
-          <div className="loader-container">
+          <div className="loader-container" data-testid="loader">
             <Loader />
           </div>
         ) : (

@@ -4,15 +4,14 @@ import { BrowserRouter } from 'react-router-dom';
 import Form from '../components/Form';
 import { FormProps } from '../components/Form';
 
-const onSubmit = vi.fn();
-const triggerError = vi.fn();
+const onSubmit = vi.fn((e) => e.preventDefault());
 const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
 const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
 
-const MockForm = ({ onSubmit, triggerError }: FormProps) => {
+const MockForm = ({ onSubmit }: FormProps) => {
   return (
     <BrowserRouter>
-      <Form onSubmit={onSubmit} triggerError={triggerError} />
+      <Form onSubmit={onSubmit} />
     </BrowserRouter>
   );
 };
@@ -34,7 +33,7 @@ describe('Form Component', async () => {
   });
 
   it('clicking the Search button saves the entered value to the local storage', () => {
-    render(<MockForm onSubmit={onSubmit} triggerError={triggerError} />);
+    render(<MockForm onSubmit={onSubmit} />);
     const input = screen.getByRole('textbox') as HTMLInputElement;
     const btn = screen.getByRole('button', { name: 'Search' });
 
@@ -46,7 +45,7 @@ describe('Form Component', async () => {
   });
 
   it('retrieves the value from the local storage upon mounting', () => {
-    render(<MockForm onSubmit={onSubmit} triggerError={triggerError} />);
+    render(<MockForm onSubmit={onSubmit} />);
     const input = screen.getByRole('textbox') as HTMLInputElement;
 
     expect(input.value).toBe('savedStarShip');

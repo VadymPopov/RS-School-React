@@ -5,9 +5,10 @@ export interface ThemeContextType {
   setTheme: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const ThemeContext = React.createContext<ThemeContextType | undefined>(
-  undefined
-);
+export const ThemeContext = React.createContext<ThemeContextType>({
+  theme: 'light',
+  setTheme: () => {},
+});
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState('light');

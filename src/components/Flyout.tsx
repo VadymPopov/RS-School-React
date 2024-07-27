@@ -2,9 +2,11 @@ import { StarShip } from '../types';
 import Button from './Button';
 import { useAppDispatch } from '../redux/hooks';
 import { unselectAll } from '../redux/starShipSlice';
+import { useRef } from 'react';
 
 export default function Flyout({ items }: { items: StarShip[] }) {
   const dispatch = useAppDispatch();
+  const linkRef = useRef<HTMLAnchorElement>(null);
   const message =
     items.length > 1
       ? `${items.length} items are selected`
@@ -29,13 +31,12 @@ export default function Flyout({ items }: { items: StarShip[] }) {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    if (linkRef.current) {
+      linkRef.current.href = url;
+      linkRef.current.download = filename;
+      linkRef.current.click();
+      URL.revokeObjectURL(url);
+    }
   };
 
   return (
@@ -45,6 +46,7 @@ export default function Flyout({ items }: { items: StarShip[] }) {
         <Button label="Download" onClick={() => downloadCSV(items, filename)} />
         <Button label="Unselect all" onClick={() => dispatch(unselectAll())} />
       </div>
+      <a ref={linkRef} style={{ display: 'none' }} />
     </div>
   );
 }

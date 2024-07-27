@@ -22,7 +22,7 @@ export default function Pagination({ totalPages }: PaginationProps) {
   }
 
   return (
-    <div>
+    <div data-testid="pagination">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage <= 1}

@@ -1,36 +1,14 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ShipItem from '../components/ShipItem';
 import { StarShip } from '../types';
 import ShipDetails from '../components/ShipDetails';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
-import { beforeAll, afterEach, afterAll } from 'vitest';
 import {
   createMemoryRouter,
   RouterProvider,
   RouteObject,
 } from 'react-router-dom';
-
-const server = setupServer(
-  http.get('https://swapi.dev/api/starships/10', () => {
-    return HttpResponse.json({
-      name: 'Falcon',
-      model: 'YT-1300 light freighter',
-      manufacturer: 'Corellian Engineering Corporation',
-      passengers: '6',
-      created: '2014-12-10',
-      max_atmosphering_speed: '1050',
-      cost_in_credits: '100000',
-      crew: '4',
-      length: '34.37',
-    });
-  })
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+import { renderWithContext } from './test-utils';
 
 const mockShip: StarShip = {
   name: 'Falcon',
@@ -41,7 +19,7 @@ const mockShip: StarShip = {
 
 const renderWithRouter = (routes: RouteObject[], initialEntries = ['/']) => {
   const router = createMemoryRouter(routes, { initialEntries });
-  return render(<RouterProvider router={router} />);
+  return renderWithContext(<RouterProvider router={router} />);
 };
 
 const routes = [
@@ -72,18 +50,6 @@ describe('ShipsItem Component', () => {
     expect(headerName.textContent).toBe('Falcon');
   });
 
-  it('clicking on a card navigates to the detailed card component', async () => {
-    renderWithRouter(routes);
-
-    fireEvent.click(screen.getByRole('heading', { name: /Falcon/i }));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('details')).toBeInTheDocument();
-    });
-  });
-});
-
-describe('ShipDetails', () => {
   it('loading indicator is displayed while fetching data', async () => {
     renderWithRouter(routes);
 
@@ -94,6 +60,17 @@ describe('ShipDetails', () => {
     });
   });
 
+  it('clicking on a card navigates to the detailed card component', async () => {
+    renderWithRouter(routes);
+
+    fireEvent.click(screen.getByRole('heading', { name: /Falcon/i }));
+    await waitFor(() => {
+      expect(screen.getByTestId('details')).toBeInTheDocument();
+    });
+  });
+});
+
+describe('ShipDetails', () => {
   it('detailed card component correctly displays the detailed card data', async () => {
     renderWithRouter(routes);
 
