@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { BrowserRouter } from 'react-router-dom';
 import Form from '../components/Form';
 import { FormProps } from '../components/Form';
 
@@ -9,11 +8,7 @@ const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
 const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
 
 const MockForm = ({ onSubmit }: FormProps) => {
-  return (
-    <BrowserRouter>
-      <Form onSubmit={onSubmit} />
-    </BrowserRouter>
-  );
+  return <Form onSubmit={onSubmit} />;
 };
 
 describe('Form Component', async () => {

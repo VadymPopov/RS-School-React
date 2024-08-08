@@ -1,14 +1,15 @@
-import { screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import StarWarsView from '../views/StarWars';
-import { renderWithContext } from './test-utils';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import StarWarsView from '../components/StarWars';
+import { renderWithContext } from '../test-utils/renderWithContext';
+import { createMockRouter } from '../test-utils/createMockRouter';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 
 describe('StarWarsView', () => {
   const setup = () => {
     renderWithContext(
-      <MemoryRouter>
+      <RouterContext.Provider value={createMockRouter({})}>
         <StarWarsView showSplitScreen={false} />
-      </MemoryRouter>
+      </RouterContext.Provider>
     );
   };
 
@@ -26,5 +27,19 @@ describe('StarWarsView', () => {
       expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
       expect(screen.getByText(/Falcon/i)).toBeInTheDocument();
     });
+  });
+
+  it('displays the list of ships when data is available', () => {
+    const mockRouter = createMockRouter({ query: { q: 'star', page: '2' } });
+
+    renderWithContext(
+      <RouterContext.Provider value={mockRouter}>
+        <StarWarsView showSplitScreen={true} />
+      </RouterContext.Provider>
+    );
+
+    fireEvent.click(screen.getByRole('main'));
+
+    expect(mockRouter.replace).toHaveBeenCalledWith('/?q=star&page=2');
   });
 });

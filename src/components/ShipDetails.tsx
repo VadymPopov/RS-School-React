@@ -1,14 +1,26 @@
-import { useNavigate, useParams } from 'react-router-dom';
 import Loader from './Loader';
 import Error from './Error';
 import { starshipApi } from '../redux/swapi';
+import { useRouter } from 'next/router';
 
 export default function ShipDetails() {
-  const { shipId } = useParams();
+  const router = useRouter();
+  const { q, page, shipId } = router.query;
+  const path = (() => {
+    if (q && page) {
+      return `/?q=${q}&page=${page}`;
+    } else if (q) {
+      return `/?q=${q}`;
+    } else if (page) {
+      return `/?page=${page}`;
+    } else {
+      return '/';
+    }
+  })();
+
   const { data, error, isLoading } = starshipApi.useGetStarShipDetailsQuery(
-    shipId || '1'
+    (shipId as string) || '1'
   );
-  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -24,7 +36,7 @@ export default function ShipDetails() {
 
   return (
     <div data-testid="details">
-      <button className="fixed-button" onClick={() => navigate('/')}>
+      <button className="fixed-button" onClick={() => router.push(path)}>
         Close
       </button>
       <div>

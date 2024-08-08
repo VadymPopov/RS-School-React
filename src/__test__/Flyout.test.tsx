@@ -1,6 +1,6 @@
 import { screen, fireEvent } from '@testing-library/react';
 import Flyout from '../components/Flyout';
-import { renderWithContext } from './test-utils';
+import { renderWithContext } from '../test-utils/renderWithContext';
 import { unselectAll } from '../redux/starShipSlice';
 import { store } from '../redux/store';
 

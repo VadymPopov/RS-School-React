@@ -2,6 +2,10 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 4rem;
+  text-align: center;
 }
 
 .light-theme {
@@ -42,7 +46,6 @@
 
 body {
   margin: 0;
-  display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -157,13 +160,6 @@ li {
 }
 
 .loader-container {
-  display: flex;
-  justify-content: center;
-  align-items: self-start;
-  height: 100vh;
-}
-
-.nothing-found {
   display: flex;
   justify-content: center;
   align-items: self-start;
@@ -297,4 +293,11 @@ li {
   display: flex;
   gap: 10px;
   margin-right: 40px;
+}
+
+.nothing-found {
+  display: flex;
+  justify-content: center;
+  align-items: self-start;
+  height: 100vh;
 }

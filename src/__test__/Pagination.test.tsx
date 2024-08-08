@@ -1,55 +1,76 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Pagination from '../components/Pagination';
-import { MemoryRouter } from 'react-router-dom';
+import { useRouter } from 'next/router';
+import { vi } from 'vitest';
 
-const MockPagination = ({ pages, page }: { pages: number; page: number }) => {
-  return (
-    <MemoryRouter initialEntries={[`/?page=${page}`]}>
-      <Pagination totalPages={pages} />
-    </MemoryRouter>
-  );
-};
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
 
 describe('Pagination Component', () => {
+  const mockReplace = vi.fn();
+  const useRouterMock = {
+    query: {},
+    replace: mockReplace,
+  };
+
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue(useRouterMock);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('does not render when totalPages is 1 or less', () => {
-    render(<MockPagination pages={1} page={1} />);
-    expect(screen.queryByText(/Page/)).toBeNull();
+    useRouterMock.query = { page: '1' };
+    render(<Pagination totalPages={1} />);
+    expect(screen.queryByTestId('pagination')).toBeNull();
   });
 
   it('renders correctly with totalPages greater than 1', () => {
-    render(<MockPagination pages={3} page={2} />);
+    useRouterMock.query = { page: '2' };
+    render(<Pagination totalPages={3} />);
     expect(screen.getByText(/Page 2 of 3/)).toBeInTheDocument();
     expect(screen.getByText(/previous/i)).toBeInTheDocument();
     expect(screen.getByText(/next/i)).toBeInTheDocument();
   });
 
   it('disables Previous button on the first page', () => {
-    render(<MockPagination pages={3} page={1} />);
+    useRouterMock.query = { page: '1' };
+    render(<Pagination totalPages={3} />);
     expect(screen.getByText(/Previous/)).toBeDisabled();
+    expect(screen.getByText(/next/i)).toBeEnabled();
   });
 
   it('disables Next button on the last page', () => {
-    render(<MockPagination pages={3} page={3} />);
+    useRouterMock.query = { page: '3' };
+    render(<Pagination totalPages={3} />);
     expect(screen.getByText(/next/i)).toBeDisabled();
+    expect(screen.getByText(/previous/i)).toBeEnabled();
   });
-  it('correctly handles page changes', () => {
-    render(<MockPagination pages={5} page={1} />);
+
+  it('correctly handles page changes', async () => {
+    useRouterMock.query = { page: '2' };
+    render(<Pagination totalPages={5} />);
 
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
-    expect(screen.getByText('Page 2 of 5')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /previous/i })).toBeEnabled();
+
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/',
+        query: { page: 3 },
+      });
+    });
 
     fireEvent.click(screen.getByRole('button', { name: /previous/i }));
-    expect(screen.getByText('Page 1 of 5')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /previous/i })).toBeDisabled();
 
-    fireEvent.click(screen.getByRole('button', { name: /next/i }));
-    fireEvent.click(screen.getByRole('button', { name: /next/i }));
-    fireEvent.click(screen.getByRole('button', { name: /next/i }));
-    fireEvent.click(screen.getByRole('button', { name: /next/i }));
-
-    expect(screen.getByText('Page 5 of 5')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /next/i })).toBeDisabled();
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/',
+        query: { page: 1 },
+      });
+    });
   });
 });

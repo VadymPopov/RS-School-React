@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ShipsList from '../components/ShipsList';
 import { StarShip } from '../types';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
+import { renderWithContext } from '../test-utils/renderWithContext';
+import { createMockRouter } from '../test-utils/createMockRouter';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+
 const mockShips: StarShip[] = [
   {
     name: 'Ship 1',
@@ -21,25 +22,25 @@ const mockShips: StarShip[] = [
   },
 ];
 
-const MockShipsList = ({ ships }: { ships: StarShip[] }) => {
-  return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <ShipsList ships={ships} />
-      </BrowserRouter>
-    </Provider>
-  );
-};
-
 describe('ShipsList Component', () => {
   it('renders the specified number of cards', () => {
-    render(<MockShipsList ships={mockShips} />);
+    renderWithContext(
+      <RouterContext.Provider
+        value={createMockRouter({ asPath: '/details/10' })}
+      >
+        <ShipsList ships={mockShips} />
+      </RouterContext.Provider>
+    );
     const shipItems = screen.getAllByRole('listitem');
     expect(shipItems).toHaveLength(mockShips.length);
   });
 
   it('displays an appropriate message if no cards are present', () => {
-    render(<MockShipsList ships={[]} />);
+    renderWithContext(
+      <RouterContext.Provider value={createMockRouter({})}>
+        <ShipsList ships={[]} />
+      </RouterContext.Provider>
+    );
     expect(screen.getByText('Nothing have found')).toBeInTheDocument();
   });
 });
