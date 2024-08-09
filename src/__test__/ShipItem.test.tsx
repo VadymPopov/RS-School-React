@@ -6,8 +6,13 @@ import { renderWithContext } from '../test-utils/renderWithContext';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { addToSelected } from '../redux/starShipSlice';
 import { vi, describe, it, beforeEach, expect } from 'vitest';
-import { createMockRouter } from '../test-utils/createMockRouter';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { usePathname, useRouter } from 'next/navigation';
+
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+  usePathname: vi.fn(),
+}));
+
 vi.mock('../redux/hooks', () => ({
   useAppDispatch: vi.fn(),
   useAppSelector: vi.fn(),
@@ -20,59 +25,49 @@ const mockShip: StarShip = {
   url: 'https://swapi.dev/api/starships/10',
 };
 
+const setupMocks = () => {
+  const mockPush = vi.fn();
+  const dispatch = vi.fn();
+  (useRouter as jest.Mock).mockReturnValue({
+    push: mockPush,
+  });
+  (usePathname as jest.Mock).mockReturnValue('/details/10');
+  (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatch);
+  (useAppSelector as unknown as jest.Mock).mockImplementation((selectorFn) =>
+    selectorFn({
+      starships: {
+        items: [mockShip],
+        selectedItems: [],
+      },
+    })
+  );
+  return { mockPush, dispatch };
+};
+
 describe('ShipItem Component', () => {
   beforeEach(() => {
-    (useAppDispatch as unknown as jest.Mock).mockReturnValue(vi.fn());
-    (useAppSelector as unknown as jest.Mock).mockImplementation((selectorFn) =>
-      selectorFn({
-        starships: {
-          items: [
-            {
-              name: 'Falcon',
-              model: 'YT-1300 light freighter',
-              manufacturer: 'Corellian Engineering Corporation',
-              url: 'https://swapi.dev/api/starships/10',
-            },
-          ],
-          selectedItems: [],
-        },
-      })
-    );
+    vi.clearAllMocks();
+    setupMocks();
   });
 
   it('renders the relevant card data', () => {
-    renderWithContext(
-      <RouterContext.Provider
-        value={createMockRouter({ asPath: '/details/10' })}
-      >
-        <ShipItem {...mockShip} />
-      </RouterContext.Provider>
+    renderWithContext(<ShipItem {...mockShip} />);
+
+    expect(
+      screen.getByRole('heading', { name: /falcon/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Model:/).closest('p')).toHaveTextContent(
+      'Model: YT-1300 light freighter'
     );
-
-    const headerName = screen.getByRole('heading', { name: /falcon/i });
-    const modelParagraph = screen.getByText(/Model:/).closest('p');
-    const manufacturerParagraph = screen
-      .getByText(/Manufacturer:/)
-      .closest('p');
-
-    expect(headerName).toBeInTheDocument();
-    expect(modelParagraph).toHaveTextContent('Model: YT-1300 light freighter');
-    expect(manufacturerParagraph).toHaveTextContent(
+    expect(screen.getByText(/Manufacturer:/).closest('p')).toHaveTextContent(
       'Manufacturer: Corellian Engineering Corporation'
     );
   });
 
   it('handles checkbox change', () => {
-    const dispatch = vi.fn();
-    (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatch);
+    const { dispatch } = setupMocks();
 
-    renderWithContext(
-      <RouterContext.Provider
-        value={createMockRouter({ asPath: '/details/10' })}
-      >
-        <ShipItem {...mockShip} />
-      </RouterContext.Provider>
-    );
+    renderWithContext(<ShipItem {...mockShip} />);
 
     const checkbox = screen.getByRole('checkbox');
     fireEvent.click(checkbox);
@@ -80,28 +75,10 @@ describe('ShipItem Component', () => {
     expect(dispatch).toHaveBeenCalledWith(addToSelected(mockShip));
   });
 
-  it('navigates on link click', () => {
-    const mockRouter = createMockRouter({
-      asPath: '/details/10',
-    });
-
-    renderWithContext(
-      <RouterContext.Provider value={mockRouter}>
-        <ShipItem {...mockShip} />
-      </RouterContext.Provider>
-    );
+  it('navigates to the ship details page when the link is clicked', () => {
+    renderWithContext(<ShipItem {...mockShip} />);
 
     const link = screen.getByRole('link', { name: /falcon/i });
-    fireEvent.click(link);
-
-    expect(mockRouter.push).toHaveBeenCalledWith(
-      `/details/10`,
-      `/details/10`,
-      expect.objectContaining({
-        locale: undefined,
-        scroll: true,
-        shallow: undefined,
-      })
-    );
+    expect(link).toHaveAttribute('href', '/details/10');
   });
 });

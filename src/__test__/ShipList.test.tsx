@@ -3,8 +3,6 @@ import '@testing-library/jest-dom';
 import ShipsList from '../components/ShipsList';
 import { StarShip } from '../types';
 import { renderWithContext } from '../test-utils/renderWithContext';
-import { createMockRouter } from '../test-utils/createMockRouter';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 
 const mockShips: StarShip[] = [
   {
@@ -24,23 +22,13 @@ const mockShips: StarShip[] = [
 
 describe('ShipsList Component', () => {
   it('renders the specified number of cards', () => {
-    renderWithContext(
-      <RouterContext.Provider
-        value={createMockRouter({ asPath: '/details/10' })}
-      >
-        <ShipsList ships={mockShips} />
-      </RouterContext.Provider>
-    );
+    renderWithContext(<ShipsList ships={mockShips} />);
     const shipItems = screen.getAllByRole('listitem');
     expect(shipItems).toHaveLength(mockShips.length);
   });
 
   it('displays an appropriate message if no cards are present', () => {
-    renderWithContext(
-      <RouterContext.Provider value={createMockRouter({})}>
-        <ShipsList ships={[]} />
-      </RouterContext.Provider>
-    );
+    renderWithContext(<ShipsList ships={[]} />);
     expect(screen.getByText('Nothing have found')).toBeInTheDocument();
   });
 });

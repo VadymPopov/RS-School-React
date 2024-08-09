@@ -4,15 +4,15 @@ import Checkbox from './Checkbox';
 import { useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { deleteFromSelected, addToSelected } from '../redux/starShipSlice';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 export default function ShipItem({ name, model, manufacturer, url }: StarShip) {
+  const pathname = usePathname();
   const match = url.match(/(\d+)/);
   const shipId = match && match[0];
   const items = useAppSelector((state) => state.starships.items);
   const selected = useAppSelector((state) => state.starships.selectedItems);
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
   const item = useMemo(
     () => items.find((item) => item.name === name),
@@ -35,9 +35,7 @@ export default function ShipItem({ name, model, manufacturer, url }: StarShip) {
       <Link
         href={`/details/${shipId}${location.search}`}
         className={
-          router.asPath === `/details/${shipId}${location.search}`
-            ? 'active'
-            : ''
+          pathname === `/details/${shipId}${location.search}` ? 'active' : ''
         }
       >
         <div>

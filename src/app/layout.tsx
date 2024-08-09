@@ -1,14 +1,21 @@
-import type { AppProps } from 'next/app';
+'use client';
+import React from 'react';
 import ThemeProvider from '../ThemeProvider';
 import { Provider } from 'react-redux';
 import { store } from '../redux/store';
 import '../styles/index.css';
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <Component {...pageProps} />
+        <html lang="en">
+          <body>{children}</body>
+        </html>
       </ThemeProvider>
     </Provider>
   );

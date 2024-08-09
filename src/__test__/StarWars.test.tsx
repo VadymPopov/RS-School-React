@@ -1,16 +1,34 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import StarWarsView from '../components/StarWars';
 import { renderWithContext } from '../test-utils/renderWithContext';
-import { createMockRouter } from '../test-utils/createMockRouter';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
+  usePathname: vi.fn(),
+}));
+
+const mockReplace = vi.fn();
+const useRouterMock = {
+  replace: mockReplace,
+};
 
 describe('StarWarsView', () => {
-  const setup = () => {
-    renderWithContext(
-      <RouterContext.Provider value={createMockRouter({})}>
-        <StarWarsView showSplitScreen={false} />
-      </RouterContext.Provider>
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue(useRouterMock);
+    (useSearchParams as jest.Mock).mockReturnValue(
+      new URLSearchParams('page=1&q=star')
     );
+    (usePathname as jest.Mock).mockReturnValue('/');
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const setup = () => {
+    renderWithContext(<StarWarsView showSplitScreen={false} />);
   };
 
   it('renders the form, dropdown, and showing loader', () => {
@@ -30,16 +48,10 @@ describe('StarWarsView', () => {
   });
 
   it('displays the list of ships when data is available', () => {
-    const mockRouter = createMockRouter({ query: { q: 'star', page: '2' } });
-
-    renderWithContext(
-      <RouterContext.Provider value={mockRouter}>
-        <StarWarsView showSplitScreen={true} />
-      </RouterContext.Provider>
-    );
+    renderWithContext(<StarWarsView showSplitScreen={true} />);
 
     fireEvent.click(screen.getByRole('main'));
 
-    expect(mockRouter.replace).toHaveBeenCalledWith('/?q=star&page=2');
+    expect(mockReplace).toHaveBeenCalledWith('/?q=star&page=1');
   });
 });

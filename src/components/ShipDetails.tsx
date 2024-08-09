@@ -1,11 +1,14 @@
+'use client';
 import Loader from './Loader';
 import Error from './Error';
 import { starshipApi } from '../redux/swapi';
-import { useRouter } from 'next/router';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function ShipDetails() {
+export default function ShipDetails({ shipId }: { shipId: string }) {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const { q, page, shipId } = router.query;
+  const page = searchParams.get('page');
+  const q = searchParams.get('q');
   const path = (() => {
     if (q && page) {
       return `/?q=${q}&page=${page}`;
@@ -19,7 +22,7 @@ export default function ShipDetails() {
   })();
 
   const { data, error, isLoading } = starshipApi.useGetStarShipDetailsQuery(
-    (shipId as string) || '1'
+    shipId || '1'
   );
 
   if (isLoading) {

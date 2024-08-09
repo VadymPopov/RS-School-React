@@ -10,19 +10,20 @@ import { starshipApi } from '../redux/swapi';
 import Error from '../components/Error';
 import { setStarships } from '../redux/starShipSlice';
 import { useAppDispatch } from '../redux/hooks';
-
-import { useRouter } from 'next/router';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 export default function StarWarsView({
   showSplitScreen,
 }: {
   showSplitScreen: boolean;
 }) {
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
 
   const { searchQuery, setSearchQuery } = useLocalStorage();
   const [totalPages, setTotalPages] = useState<number>(0);
-  const page = (router.query.page as string) || '1';
+  const page = (searchParams.get('page') as string) || '1';
 
   const { data, error, isLoading } = starshipApi.useGetStarShipsQuery({
     searchQuery,
@@ -38,7 +39,8 @@ export default function StarWarsView({
   }, [data, dispatch]);
 
   const handleLeftPaneClick = (e: BaseSyntheticEvent<MouseEvent>) => {
-    const { q, page } = router.query;
+    const page = searchParams.get('page');
+    const q = searchParams.get('q');
     e.preventDefault();
 
     const path = (() => {
@@ -62,10 +64,7 @@ export default function StarWarsView({
     const searchQuery = form.query.value.trim();
     setSearchQuery(searchQuery);
 
-    router.push({
-      pathname: router.pathname,
-      query: { q: searchQuery, page: 1 },
-    });
+    router.push(`${pathname}?q=${searchQuery}&page=1`);
   };
 
   if (error) {
