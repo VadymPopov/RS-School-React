@@ -5,9 +5,5 @@ interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export default function Button({ label, ...props }: BtnProps) {
-  return (
-    <button className="btn" {...props}>
-      {label}
-    </button>
-  );
+  return <button {...props}>{label}</button>;
 }
