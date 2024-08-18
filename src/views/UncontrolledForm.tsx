@@ -6,16 +6,19 @@ import Button from '../components/Button';
 import AutocompleteInput from '../components/AutocompleteInput';
 import { validationSchema } from '../schemas/formValidationSchema';
 import { useAppDispatch } from '../redux/hooks';
-import { addUncontrolledFormData } from '../redux/uncontrolledSlice';
+import { addFormData } from '../redux/formsSlice';
 import { useAppSelector } from '../redux/hooks';
 import { getBase64 } from '../utils';
 import usePasswordStrength from '../hooks/usePasswordStrength';
 import { useNavigate } from 'react-router-dom';
 import { FormElements, FormErrors, FormValues } from '../types';
+import { v4 as uuidv4 } from 'uuid';
+import { FormType } from '../types';
 
 export default function UncontrolledForm() {
   const [errors, setErrors] = useState<FormErrors>({});
-  const { passwordStrength, validatePasswordStrength } = usePasswordStrength();
+  const { strengthColor, passwordStrength, validatePasswordStrength } =
+    usePasswordStrength();
   const dispatch = useAppDispatch();
   const countries = useAppSelector((state) => state.countries);
   const navigate = useNavigate();
@@ -27,13 +30,17 @@ export default function UncontrolledForm() {
 
     const formValues: FormValues = {
       name: formElements.name.value,
-      age: formElements.age.value,
+      age: Number(formElements.age.value),
       email: formElements.email.value,
       password: formElements.password.value,
       confirmPassword: formElements.confirmPassword.value,
-      gender: formElements.gender.value,
+      gender: formElements.gender.value as
+        | 'male'
+        | 'female'
+        | 'other'
+        | 'prefer not to answer',
       terms: formElements.terms.checked,
-      picture: formElements.picture.files?.[0],
+      picture: formElements.picture.files?.[0] as File,
       country: formElements.country.value,
     };
 
@@ -41,7 +48,17 @@ export default function UncontrolledForm() {
       await validationSchema.validate(formValues, { abortEarly: false });
       const base64 = await getBase64(formValues.picture as File);
       validatePasswordStrength(formValues.password);
-      dispatch(addUncontrolledFormData({ ...formValues, picture: base64 }));
+      dispatch(
+        addFormData({
+          form: {
+            ...formValues,
+            picture: base64,
+            id: uuidv4(),
+            isNew: true,
+          },
+          formType: FormType.Uncontrolled,
+        })
+      );
       setErrors({});
       navigate('/');
     } catch (errors) {
@@ -72,6 +89,7 @@ export default function UncontrolledForm() {
         label="Age"
         name="age"
         type="number"
+        defaultValue={0}
         min={0}
         error={errors.age || ''}
       />
@@ -88,7 +106,7 @@ export default function UncontrolledForm() {
         error={errors.password || ''}
       />
       <div>
-        <p>Password Strength: {passwordStrength}</p>
+        <p style={{ color: strengthColor }}>{passwordStrength}</p>
       </div>
       <InputField
         label="Confirm Password"
@@ -100,6 +118,7 @@ export default function UncontrolledForm() {
         label="Gender"
         name="gender"
         values={['male', 'female', 'other', 'prefer not to answer']}
+        error={errors.gender || ''}
       />
       <InputField
         label="Accept terms and conditions"

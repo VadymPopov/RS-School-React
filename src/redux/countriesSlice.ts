@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const countries = [
+export const countries = [
   'Afghanistan',
   'Albania',
   'Algeria',

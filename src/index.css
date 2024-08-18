@@ -276,10 +276,23 @@ select:disabled {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.active-card {
+  position: relative;
+  color: var(--background-color);
+  list-style: none;
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid var(--button-hover-border-color);
+  border-radius: 8px;
+  background-color: var(--button-bg-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .card-picture {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .card-label {
@@ -291,8 +304,8 @@ select:disabled {
 .card-img {
   border: 2px solid #ccc;
   border-radius: 10px;
-  max-width: 150px;
-  max-height: 150px;
+  max-width: 300px;
+  max-height: 300px;
   object-fit: cover;
 }
 
@@ -305,4 +318,13 @@ select:disabled {
 .card-value {
   color: #333;
   flex: 1;
+}
+
+.new {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  color: var(--error-color);
+  font-size: 24px;
+  font-weight: 700;
 }

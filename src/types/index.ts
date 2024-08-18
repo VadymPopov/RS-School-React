@@ -1,6 +1,27 @@
+import { InputHTMLAttributes } from 'react';
+
+export interface SelectFieldProps
+  extends InputHTMLAttributes<HTMLSelectElement> {
+  values: string[];
+  label: string;
+  name: string;
+  error: string;
+  controlled?: boolean;
+}
+
+export interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  type: string;
+  name: string;
+  list: string;
+  error: string;
+  options: string[];
+  controlled?: boolean;
+}
+
 export interface IFormValues {
   name: string;
-  age: string;
+  age: number;
   email: string;
   password: string;
   confirmPassword: string;
@@ -8,6 +29,8 @@ export interface IFormValues {
   terms: boolean;
   picture: string;
   country: string;
+  id: string;
+  isNew: boolean;
 }
 
 export interface FormElements extends HTMLFormControlsCollection {
@@ -24,13 +47,13 @@ export interface FormElements extends HTMLFormControlsCollection {
 
 export interface FormValues {
   name: string;
-  age: string;
+  age: number;
   email: string;
   password: string;
   confirmPassword: string;
-  gender: string;
+  gender: 'male' | 'female' | 'other' | 'prefer not to answer';
   terms: boolean;
-  picture?: File;
+  picture: File | FileList;
   country: string;
 }
 
@@ -44,4 +67,24 @@ export interface FormErrors {
   terms?: string;
   picture?: string;
   country?: string;
+}
+
+export enum FormType {
+  Controlled = 'controlled',
+  Uncontrolled = 'uncontrolled',
+}
+
+export interface IPayloadAddForm {
+  form: IFormValues;
+  formType: FormType;
+}
+
+export interface FormState {
+  controlledForms: Array<IFormValues>;
+  uncontrolledForms: Array<IFormValues>;
+}
+
+export interface PayloadResetIsNew {
+  id: string;
+  formType: FormType;
 }

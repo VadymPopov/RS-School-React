@@ -1,26 +1,25 @@
-import { InputHTMLAttributes } from 'react';
-
-interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  type: string;
-  name: string;
-  error: string;
-}
+import { useFormContext } from 'react-hook-form';
+import { InputFieldProps } from '../types';
 
 export default function InputField({
   label,
   type,
   name,
   error,
+  controlled,
   ...props
 }: InputFieldProps) {
+  const methods = useFormContext();
+  const registeredProps = controlled ? methods.register(name) : {};
+
   return (
     <div>
       <label htmlFor={name}>{label}</label>
       <input
         id={name}
-        {...props}
         type={type}
+        {...props}
+        {...registeredProps}
         className={error && 'error'}
         style={type === 'checkbox' ? { width: '10%' } : { width: '100%' }}
       />

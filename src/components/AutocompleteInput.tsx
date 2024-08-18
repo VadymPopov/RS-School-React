@@ -1,13 +1,5 @@
-import { InputHTMLAttributes } from 'react';
-
-interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  type: string;
-  name: string;
-  list: string;
-  error: string;
-  options: string[];
-}
+import { useFormContext } from 'react-hook-form';
+import { InputFieldProps } from '../types';
 
 export default function AutocompleteInput({
   label,
@@ -16,14 +8,18 @@ export default function AutocompleteInput({
   list,
   error,
   options,
+  controlled,
   ...props
 }: InputFieldProps) {
+  const methods = useFormContext();
+  const registeredProps = controlled ? methods.register(name) : {};
   return (
     <div>
       <label htmlFor={name}>{label}</label>
       <input
         list={list}
         id={name}
+        {...registeredProps}
         {...props}
         type={type}
         placeholder="Type to search..."

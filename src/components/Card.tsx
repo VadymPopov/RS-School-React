@@ -1,5 +1,9 @@
 import { IFormValues } from '../types';
 
+interface CardProps extends IFormValues {
+  active: boolean;
+}
+
 export default function Card({
   name,
   age,
@@ -8,11 +12,16 @@ export default function Card({
   gender,
   picture,
   country,
-}: IFormValues) {
+  active,
+}: CardProps) {
   return (
-    <li className="card">
+    <li className={active ? 'active-card' : 'card'}>
+      {active && (
+        <div className="new">
+          <p>New</p>
+        </div>
+      )}
       <div className="card-picture">
-        <span className="card-label">Picture:</span>
         <img src={picture} alt="avatar" className="card-img" />
       </div>
       <div className="card-item">
